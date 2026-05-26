@@ -128,15 +128,15 @@
     .header::before { top: 0; width: 80%; }
     .header::after { bottom: 0; width: 60%; }
 
-    .header h1 {
-      font-family: 'Bebas Neue', cursive; font-size: 4rem; font-weight: 800;
-      margin: 15px 0;
-      text-shadow: 3px 3px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 0 0 30px rgba(196,30,58,0.8);
-      background: linear-gradient(45deg, #ffd700, #fff, #ffd700);
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-      background-clip: text; animation: textShine 3s ease-in-out infinite;
-      letter-spacing: 5px;
-    }
+	.header h1 {
+	  font-family: 'Bebas Neue', cursive; font-size: 4rem; font-weight: 800;
+	  margin: 15px 0;
+	  color: #fff; /* Белый цвет текста */
+	  text-shadow: 3px 3px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 0 0 30px rgba(196,30,58,0.8);
+	  animation: textShine 3s ease-in-out infinite;
+	  letter-spacing: 5px;
+	}
+	  
     @keyframes textShine { 0%,100%{filter:brightness(1)} 50%{filter:brightness(1.3)} }
 
     .header .subtitle {
