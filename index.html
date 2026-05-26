@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>🕷️ Приглашение на День Рождения</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background: radial-gradient(ellipse at top, #1a0033 0%, #0a001a 50%, #000 100%),
+        url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%239b0000' fill-opacity='0.15'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+      color: #fff;
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Паутина на фоне */
+    .web-bg {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      pointer-events: none; z-index: 0; opacity: 0.3;
+    }
+    .web-bg::before {
+      content: ''; position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 150vmax; height: 150vmax;
+      background: radial-gradient(circle, transparent 0%, transparent 2%, rgba(255,255,255,0.1) 2%, rgba(255,255,255,0.1) 3%, transparent 3%),
+        repeating-radial-gradient(circle at center, transparent 0px, transparent 2px, rgba(255,255,255,0.08) 2px, rgba(255,255,255,0.08) 4px);
+      animation: webRotate 60s linear infinite;
+    }
+    @keyframes webRotate {
+      from { transform: translate(-50%, -50%) rotate(0deg); }
+      to { transform: translate(-50%, -50%) rotate(360deg); }
+    }
+
+    /* Ползающие пауки */
+    .spider {
+      position: fixed; font-size: 24px; z-index: 1;
+      animation: spiderCrawl 20s linear infinite;
+      opacity: 0.6; pointer-events: none;
+    }
+    .spider:nth-child(2) { animation-delay: -5s; animation-duration: 25s; }
+    .spider:nth-child(3) { animation-delay: -10s; animation-duration: 30s; }
+    @keyframes spiderCrawl {
+      0% { top: -50px; left: 20%; transform: rotate(0deg); }
+      25% { top: 30%; left: 80%; transform: rotate(90deg); }
+      50% { top: 70%; left: 10%; transform: rotate(180deg); }
+      75% { top: 40%; left: 90%; transform: rotate(270deg); }
+      100% { top: -50px; left: 20%; transform: rotate(360deg); }
+    }
+
+    /* Экран с кнопкой */
+    #cover-screen {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: radial-gradient(circle at center, #c41e3a 0%, #8b0000 40%, #1a0033 100%);
+      display: flex; flex-direction: column; justify-content: center; align-items: center;
+      z-index: 1000; transition: opacity 0.8s ease, transform 0.8s ease;
+      padding: 20px; text-align: center;
+    }
+    #cover-screen::before {
+      content: '🕷️'; position: absolute; font-size: 200px; opacity: 0.1;
+      animation: pulse 3s ease-in-out infinite;
+    }
+    @keyframes pulse { 0%,100%{transform:scale(1);opacity:0.1} 50%{transform:scale(1.1);opacity:0.2} }
+    #cover-screen.hidden { opacity: 0; transform: scale(1.1); pointer-events: none; }
+
+    .spider-logo {
+      font-size: 100px; margin-bottom: 25px;
+      animation: swing 2s ease-in-out infinite;
+      filter: drop-shadow(0 0 30px rgba(255,0,0,0.7));
+      position: relative; z-index: 10;
+    }
+    @keyframes swing { 0%,100%{transform:rotate(-5deg)} 50%{transform:rotate(5deg)} }
+
+    .open-btn {
+      background: linear-gradient(135deg, #c41e3a 0%, #8b0000 50%, #c41e3a 100%);
+      color: #fff; border: 3px solid #ffd700;
+      padding: 20px 60px; font-size: 1.4rem; font-weight: 800;
+      font-family: 'Bebas Neue', cursive; letter-spacing: 3px;
+      border-radius: 50px; cursor: pointer;
+      box-shadow: 0 0 20px rgba(196,30,58,0.8), 0 0 40px rgba(255,215,0,0.4), inset 0 0 20px rgba(255,255,255,0.1);
+      transition: all 0.3s ease; text-transform: uppercase;
+      position: relative; overflow: hidden; z-index: 10;
+    }
+    .open-btn::before {
+      content: ''; position: absolute; top: 0; left: -100%;
+      width: 100%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+      transition: left 0.5s ease;
+    }
+    .open-btn:hover::before { left: 100%; }
+    .open-btn:hover {
+      transform: translateY(-4px) scale(1.02);
+      box-shadow: 0 0 30px rgba(196,30,58,1), 0 0 60px rgba(255,215,0,0.6), inset 0 0 30px rgba(255,255,255,0.2);
+    }
+    .open-btn:active { transform: translateY(2px); }
+
+    .cover-text {
+      margin-top: 30px; font-size: 1.2rem; opacity: 0.9;
+      font-weight: 400; letter-spacing: 2px;
+      text-transform: uppercase; color: #ffd700; z-index: 10;
+    }
+
+    /* Основное приглашение */
+    #invitation {
+      display: none; max-width: 850px; margin: 0 auto;
+      padding: 30px 20px 60px; position: relative; z-index: 10;
+    }
+    #invitation.active { display: block; animation: heroEntrance 1s ease; }
+    @keyframes heroEntrance {
+      from { opacity:0; transform:translateY(60px) scale(0.95) }
+      to { opacity:1; transform:translateY(0) scale(1) }
+    }
+
+    /* Заголовок */
+    .header {
+      text-align: center; padding: 40px 20px; margin-bottom: 25px; position: relative;
+    }
+    .header::before, .header::after {
+      content: ''; position: absolute; left: 50%; transform: translateX(-50%);
+      height: 4px; background: linear-gradient(90deg, transparent, #ffd700, #c41e3a, #ffd700, transparent);
+    }
+    .header::before { top: 0; width: 80%; }
+    .header::after { bottom: 0; width: 60%; }
+
+    .header h1 {
+      font-family: 'Bebas Neue', cursive; font-size: 4rem; font-weight: 800;
+      margin: 15px 0;
+      text-shadow: 3px 3px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 0 0 30px rgba(196,30,58,0.8);
+      background: linear-gradient(45deg, #ffd700, #fff, #ffd700);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text; animation: textShine 3s ease-in-out infinite;
+      letter-spacing: 5px;
+    }
+    @keyframes textShine { 0%,100%{filter:brightness(1)} 50%{filter:brightness(1.3)} }
+
+    .header .subtitle {
+      font-size: 1.3rem; opacity: 0.95; font-weight: 600;
+      letter-spacing: 8px; text-transform: uppercase; color: #c41e3a;
+      background: rgba(255,255,255,0.9); padding: 8px 25px;
+      border-radius: 30px; display: inline-block;
+      border: 2px solid #c41e3a; box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    }
+    .header .date {
+      font-family: 'Bebas Neue', cursive; font-size: 2.5rem;
+      margin-top: 20px; color: #ffd700;
+      text-shadow: 2px 2px 0 #000; letter-spacing: 3px;
+    }
+    .spider-emblem {
+      font-size: 60px; margin: 10px 0;
+      animation: bounce 1.5s ease-in-out infinite; display: block;
+    }
+    @keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-15px)} }
+
+    /* Таймер */
+    .countdown {
+      display: flex; justify-content: center; gap: 12px;
+      margin: 25px 0; flex-wrap: wrap;
+    }
+    .countdown-item {
+      background: linear-gradient(135deg, #1a0033, #2d004d);
+      padding: 15px 20px; border-radius: 15px; min-width: 85px;
+      border: 2px solid #c41e3a;
+      box-shadow: 0 0 15px rgba(196,30,58,0.5), inset 0 0 20px rgba(255,215,0,0.1);
+      position: relative; overflow: hidden;
+    }
+    .countdown-item::before {
+      content: ''; position: absolute; top: -50%; left: -50%;
+      width: 200%; height: 200%;
+      background: linear-gradient(45deg, transparent, rgba(255,215,0,0.1), transparent);
+      transform: rotate(45deg); animation: shine 3s infinite;
+    }
+    @keyframes shine {
+      0% { transform: rotate(45deg) translateX(-100%); }
+      100% { transform: rotate(45deg) translateX(100%); }
+    }
+    .countdown-value {
+      font-family: 'Bebas Neue', cursive; font-size: 2.5rem;
+      font-weight: 800; display: block; color: #ffd700;
+      text-shadow: 1px 1px 0 #000; position: relative; z-index: 1;
+    }
+    .countdown-label {
+      font-size: 0.75rem; opacity: 0.9; text-transform: uppercase;
+      letter-spacing: 2px; font-weight: 600; position: relative; z-index: 1;
+    }
+
+    /* Карточки */
+    .info-card {
+      background: linear-gradient(135deg, rgba(26,0,51,0.95), rgba(45,0,77,0.95));
+      border-radius: 25px; padding: 30px; margin: 25px 0;
+      border: 3px solid;
+      border-image: linear-gradient(45deg, #c41e3a, #ffd700, #1e90ff, #c41e3a) 1;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.4), 0 0 30px rgba(196,30,58,0.3);
+      position: relative;
+    }
+    .info-card::before {
+      content: '🕸️'; position: absolute; top: -15px; right: 20px;
+      font-size: 30px; animation: spin 10s linear infinite;
+    }
+    @keyframes spin { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+    .info-card h3 {
+      font-family: 'Bebas Neue', cursive; font-size: 1.8rem;
+      color: #ffd700; text-align: center; margin-bottom: 25px;
+      text-shadow: 1px 1px 0 #000; letter-spacing: 2px;
+    }
+    .info-item {
+      display: flex; align-items: flex-start; gap: 15px;
+      margin: 18px 0; font-size: 1.1rem; padding: 10px 0;
+      border-bottom: 1px dashed rgba(255,215,0,0.3);
+    }
+    .info-item:last-child { border-bottom: none; }
+    .info-icon {
+      font-size: 1.8rem; min-width: 35px;
+      animation: iconPulse 2s ease-in-out infinite;
+    }
+    @keyframes iconPulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.15)} }
+    .info-text strong { color: #ffd700; font-weight: 700; }
+
+    .map-btn {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: linear-gradient(135deg, #c41e3a, #8b0000);
+      color: #fff; padding: 14px 35px; border-radius: 40px;
+      text-decoration: none; font-weight: 700; margin-top: 15px;
+      transition: all 0.3s ease; border: 2px solid #ffd700;
+      box-shadow: 0 5px 20px rgba(196,30,58,0.5);
+      text-transform: uppercase; letter-spacing: 1px; font-size: 0.95rem;
+    }
+    .map-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 30px rgba(196,30,58,0.8), 0 0 25px rgba(255,215,0,0.5);
+    }
+
+    /* Dress Code */
+    .dresscode-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 15px; margin-top: 20px;
+    }
+    .dresscode-item {
+      background: rgba(255,255,255,0.1); padding: 15px 10px;
+      border-radius: 15px; text-align: center;
+      border: 1px solid rgba(196,30,58,0.5);
+      transition: transform 0.3s ease;
+    }
+    .dresscode-item:hover {
+      transform: translateY(-5px); background: rgba(196,30,58,0.2);
+    }
+    .dresscode-emoji { font-size: 2rem; display: block; margin-bottom: 8px; }
+    .dresscode-label { font-size: 0.8rem; font-weight: 600; opacity: 0.95; }
+
+    /* Telegram кнопка */
+    .telegram-section { text-align: center; padding: 35px 25px; }
+    .telegram-section h3 {
+      font-family: 'Bebas Neue', cursive; font-size: 2rem;
+      color: #ffd700; margin-bottom: 20px;
+      text-shadow: 1px 1px 0 #000; letter-spacing: 2px;
+    }
+    .telegram-btn {
+      display: inline-flex; align-items: center; gap: 12px;
+      background: linear-gradient(135deg, #0088cc, #00aadd);
+      color: #fff; padding: 18px 45px; border-radius: 50px;
+      text-decoration: none; font-weight: 700; font-size: 1.2rem;
+      margin: 15px 0; transition: all 0.3s ease;
+      border: 3px solid #fff;
+      box-shadow: 0 8px 30px rgba(0,136,204,0.5), 0 0 40px rgba(255,215,0,0.3);
+      text-transform: uppercase; letter-spacing: 2px;
+      position: relative; overflow: hidden;
+    }
+    .telegram-btn::before {
+      content: ''; position: absolute; top: 0; left: -100%;
+      width: 100%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+      transition: left 0.6s ease;
+    }
+    .telegram-btn:hover::before { left: 100%; }
+    .telegram-btn:hover {
+      transform: translateY(-4px) scale(1.03);
+      box-shadow: 0 12px 40px rgba(0,136,204,0.8), 0 0 60px rgba(255,215,0,0.5);
+    }
+    .telegram-note {
+      margin-top: 20px; font-size: 0.95rem; opacity: 0.85; font-style: italic;
+    }
+
+    /* Футер */
+    .footer { text-align: center; padding: 40px 20px 60px; margin-top: 20px; }
+    .footer-quote {
+      font-family: 'Bebas Neue', cursive; font-size: 1.8rem;
+      color: #ffd700; margin-bottom: 15px;
+      text-shadow: 1px 1px 0 #000; letter-spacing: 2px;
+    }
+    .footer-contact { opacity: 0.8; font-size: 1rem; }
+    .footer-contact a { color: #ffd700; text-decoration: none; font-weight: 600; }
+
+    /* 🔊 Кнопка управления музыкой */
+    .music-control {
+      position: fixed; bottom: 20px; right: 20px;
+      z-index: 999; display: flex; flex-direction: column;
+      align-items: center; gap: 10px;
+    }
+    .music-btn {
+      width: 50px; height: 50px; border-radius: 50%;
+      background: linear-gradient(135deg, #c41e3a, #8b0000);
+      border: 3px solid #ffd700; color: #fff;
+      font-size: 1.3rem; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.4), 0 0 15px rgba(255,215,0,0.4);
+      transition: all 0.3s ease;
+      animation: musicPulse 2s ease-in-out infinite;
+    }
+    .music-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 6px 25px rgba(0,0,0,0.5), 0 0 25px rgba(255,215,0,0.6);
+    }
+    .music-btn.muted {
+      animation: none; opacity: 0.7;
+      background: linear-gradient(135deg, #555, #333);
+    }
+    @keyframes musicPulse {
+      0%, 100% { box-shadow: 0 4px 20px rgba(0,0,0,0.4), 0 0 15px rgba(255,215,0,0.4); }
+      50% { box-shadow: 0 4px 20px rgba(0,0,0,0.4), 0 0 30px rgba(255,215,0,0.8); }
+    }
+    .music-label {
+      font-size: 0.75rem; font-weight: 600;
+      background: rgba(0,0,0,0.7); padding: 4px 12px;
+      border-radius: 20px; border: 1px solid #ffd700;
+      opacity: 0; transform: translateY(10px);
+      transition: all 0.3s ease; white-space: nowrap;
+    }
+    .music-control:hover .music-label {
+      opacity: 1; transform: translateY(0);
+    }
+
+    /* Эффект паутины */
+    .web-shoot {
+      position: fixed; width: 4px; height: 4px; background: #fff;
+      border-radius: 50%; pointer-events: none; z-index: 999;
+      animation: webShoot 1s ease-out forwards;
+      box-shadow: 0 0 10px #fff, 0 0 20px #c41e3a;
+    }
+    @keyframes webShoot {
+      to { transform: translate(var(--tx,0), var(--ty,0)) scale(0); opacity: 0; }
+    }
+
+    /* Анимация появления */
+    .fade-in-up {
+      opacity: 0; transform: translateY(30px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .fade-in-up.visible { opacity: 1; transform: translateY(0); }
+
+    /* Адаптив */
+    @media (max-width: 600px) {
+      .header h1 { font-size: 2.8rem; letter-spacing: 2px; }
+      .header .subtitle { font-size: 1rem; letter-spacing: 4px; padding: 6px 20px; }
+      .header .date { font-size: 1.8rem; }
+      .countdown-item { min-width: 70px; padding: 12px 15px; }
+      .countdown-value { font-size: 2rem; }
+      .info-card { padding: 25px 20px; }
+      .telegram-btn { padding: 16px 35px; font-size: 1.1rem; }
+      .music-control { bottom: 15px; right: 15px; }
+      .music-btn { width: 45px; height: 45px; font-size: 1.1rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Паутина на фоне -->
+  <div class="web-bg"></div>
+  
+  <!-- Ползающие пауки -->
+  <div class="spider" style="top:-30px;left:15%">🕷️</div>
+  <div class="spider" style="top:-30px;left:70%">🕷️</div>
+  <div class="spider" style="top:-30px;left:40%">🕷️</div>
+
+  <!-- 🔊 Аудио: Тема Человека-паука -->
+  <!-- Замените src на вашу ссылку с музыкой -->
+  <audio id="spiderMusic" loop preload="auto">
+    <source src="https://storage1.lightaudio.ru/dm/39922576/3afd68ef/Spider-Man%20—%201994.mp3?d=58&v=55c73dc541" type="audio/mpeg">
+    <!-- Резервный вариант -->
+    <source src="spiderman-theme.mp3" type="audio/mpeg">
+  </audio>
+
+  <!-- Экран с кнопкой -->
+  <div id="cover-screen">
+    <div class="spider-logo">🕷️</div>
+    <button class="open-btn" id="openBtn">Открыть приглашение</button>
+    <p class="cover-text">Ваш геройский вызов ожидает...</p>
+    <p style="margin-top:15px;font-size:0.9rem;opacity:0.7">🎵 Музыка включится автоматически</p>
+  </div>
+
+  <!-- Основное приглашение -->
+  <div id="invitation">
+    
+    <header class="header">
+      <span class="spider-emblem">🕸️</span>
+      <p class="subtitle">Супер-приглашение</p>
+      <h1>ДЕНЬ РОЖДЕНИЯ</h1>
+      <span class="spider-emblem">🦸</span>
+      <p class="date" id="eventDate">15 ИЮНЯ 2026</p>
+    </header>
+
+    <!-- Таймер -->
+    <div class="countdown" id="countdown">
+      <div class="countdown-item">
+        <span class="countdown-value" id="days">00</span>
+        <span class="countdown-label">Дней</span>
+      </div>
+      <div class="countdown-item">
+        <span class="countdown-value" id="hours">00</span>
+        <span class="countdown-label">Часов</span>
+      </div>
+      <div class="countdown-item">
+        <span class="countdown-value" id="minutes">00</span>
+        <span class="countdown-label">Минут</span>
+      </div>
+      <div class="countdown-item">
+        <span class="countdown-value" id="seconds">00</span>
+        <span class="countdown-label">Секунд</span>
+      </div>
+    </div>
+
+    <!-- Информация -->
+    <div class="info-card fade-in-up">
+      <h3>🗓️ Детали миссии</h3>
+      <div class="info-item">
+        <span class="info-icon">🦸</span>
+        <div class="info-text"><strong>Именинник:</strong> <span id="birthdayPerson">Анна</span></div>
+      </div>
+      <div class="info-item">
+        <span class="info-icon">📍</span>
+        <div class="info-text">
+          <strong>База:</strong> Сауна "Sauna-lux"<br>
+          <small style="opacity:0.8">ул. Вишневского, 24</small>
+        </div>
+      </div>
+      <div class="info-item">
+        <span class="info-icon">🕖</span>
+        <div class="info-text">
+          <strong>Начало:</strong> 13:00<br>
+        </div>
+      </div>
+      <div class="info-item">
+        <span class="info-icon">🎁</span>
+        <div class="info-text"><strong>Подарок:</strong> Ваше присутствие — лучший подарок! 🎉</div>
+      </div>
+      <center><a href="https://yandex.ru/maps/org/sauna_lux/1323592853/?display-text=sauna%20lux&ll=49.169589%2C55.765326&mode=search&sctx=ZAAAAAgBEAAaKAoSCRTrVPmejUhAEdcyGY7n5UtAEhIJ%2Bs%2BaH39p5j8RQPm7d9SYxD8iBgABAgMEBSgKOABA71ZIAWI6cmVhcnI9c2NoZW1lX0xvY2FsL0dlb3VwcGVyL0FkdmVydHMvQ3VzdG9tTWF4YWR2L0VuYWJsZWQ9MWI6cmVhcnI9c2NoZW1lX0xvY2FsL0dlb3VwcGVyL0FkdmVydHMvQ3VzdG9tTWF4YWR2L01heGFkdj0xNWJEcmVhcnI9c2NoZW1lX0xvY2FsL0dlb3VwcGVyL0FkdmVydHMvQ3VzdG9tTWF4YWR2L1JlZ2lvbklkcz1bMSwxMDE3NF1iQHJlYXJyPXNjaGVtZV9Mb2NhbC9HZW91cHBlci9BZHZlcnRzL01heGFkdlRvcE1peC9NYXhhZHZGb3JNaXg9MTBqAnJ1nQHNzMw9oAEAqAEAvQFhzC2JwgEFldmR9wSCAglzYXVuYSBsdXiKAgCSAgCaAgxkZXNrdG9wLW1hcHM%3D&sll=49.169589%2C55.765326&sspn=0.350189%2C0.080521&text=sauna%20lux&z=13" target="_blank" class="map-btn">🗺️ Координаты базы</a></center>
+    </div>
+
+    <!-- Dress Code -->
+    <div class="info-card fade-in-up">
+      <h3>👔 Dress Code: Spider-Style</h3>
+      <p style="text-align:center;margin-bottom:20px;opacity:0.9">
+        <em>"С великой вечеринкой приходит великий дресс-код!"</em> 🕷️
+      </p>
+      <div class="dresscode-grid">
+        <div class="dresscode-item"><span class="dresscode-emoji">🔴</span><span class="dresscode-label">Красный</span></div>
+        <div class="dresscode-item"><span class="dresscode-emoji">🔵</span><span class="dresscode-label">Синий</span></div>
+        <div class="dresscode-item"><span class="dresscode-emoji">⚫</span><span class="dresscode-label">Чёрный</span></div>
+        <div class="dresscode-item"><span class="dresscode-emoji">🕸️</span><span class="dresscode-label">Паутинка</span></div>
+        <div class="dresscode-item"><span class="dresscode-emoji">🎭</span><span class="dresscode-label">Маска</span></div>
+        <div class="dresscode-item"><span class="dresscode-emoji">🦸</span><span class="dresscode-label">Косплей</span></div>
+      </div>
+      <p style="text-align:center;margin-top:20px;font-size:0.95rem;opacity:0.85">
+        💡 <strong>Идея:</strong> <a href="https://www.ozon.ru/product/maska-cheloveka-pauka-1854508875/?at=83tBA304zCwNmryOfyz1YqvCpBpwpnu7A5M3LFMG6XZO" style="color: #ff0000;" target="_blank">Купи маску;)</a>
+      </p>
+	  <p style="text-align:center;margin-top:20px;font-size:0.95rem;opacity:0.85">
+        Не забудьте купальные принадлежности.
+      </p>
+    </div>
+
+    <!-- Telegram RSVP -->
+    <div class="info-card telegram-section fade-in-up">
+      <h3>📱 Подтвердите участие</h3>
+      <p style="opacity:0.9;margin-bottom:10px">Напишите в Telegram, чтобы занять место в команде:</p>
+      <a href="https://t.me/SteellKek" target="_blank" class="telegram-btn">
+        <span style="font-size:1.4rem">✈️</span> @SteellKek
+      </a>
+    </div>
+
+    <footer class="footer">
+      <p class="footer-quote">"С великой силой... приходит великая вечеринка!" 🕸️</p>
+    </footer>
+
+  </div>
+
+  <!-- 🔊 Кнопка управления музыкой -->
+  <div class="music-control">
+    <button class="music-btn" id="musicToggle" title="Вкл/Выкл музыку">🔊</button>
+    <span class="music-label">Тема Человека-паука</span>
+  </div>
+
+  <script>
+    // ⚙️ КОНФИГУРАЦИЯ
+    const CONFIG = {
+      birthdayPerson: "Артур",
+      eventDate: "2026-06-21T14:00:00",
+      telegram: "@SteellKek"
+    };
+
+    // Применение конфигурации
+    document.getElementById('eventDate').textContent = new Date(CONFIG.eventDate).toLocaleDateString('ru-RU', {
+      day:'numeric', month:'long', year:'numeric'
+    }).toUpperCase();
+    document.getElementById('birthdayPerson').textContent = CONFIG.birthdayPerson;
+
+    // 🎵 Управление музыкой
+    const audio = document.getElementById('spiderMusic');
+    const musicToggle = document.getElementById('musicToggle');
+    let isMuted = false;
+
+    // Функция воспроизведения (с обработкой ошибок)
+    function playMusic() {
+      audio.volume = 0.5; // Громкость 50%
+      audio.play().then(() => {
+        musicToggle.textContent = '🔊';
+        musicToggle.classList.remove('muted');
+        isMuted = false;
+      }).catch(err => {
+        console.log('Автовоспроизведение заблокировано:', err);
+        musicToggle.textContent = '🔇';
+        musicToggle.classList.add('muted');
+        isMuted = true;
+      });
+    }
+
+    // Переключение звука
+    musicToggle.addEventListener('click', function(e) {
+      e.stopPropagation();
+      if (audio.paused || isMuted) {
+        audio.play().then(() => {
+          musicToggle.textContent = '🔊';
+          musicToggle.classList.remove('muted');
+          isMuted = false;
+        }).catch(() => {
+          alert('🎵 Нажмите в любом месте страницы, чтобы включить музыку!');
+        });
+      } else {
+        audio.pause();
+        musicToggle.textContent = '🔇';
+        musicToggle.classList.add('muted');
+        isMuted = true;
+      }
+    });
+
+    // 🎬 Открытие приглашения + запуск музыки
+    document.getElementById('openBtn').addEventListener('click', function() {
+      document.getElementById('cover-screen').classList.add('hidden');
+      
+      // Запускаем музыку при первом взаимодействии
+      playMusic();
+      
+      setTimeout(() => {
+        document.getElementById('invitation').classList.add('active');
+        createWebShootEffect();
+        setTimeout(createSpiderSwing, 1000);
+      }, 600);
+    });
+
+    // ⏱️ Таймер
+    function updateCountdown() {
+      const eventTime = new Date(CONFIG.eventDate).getTime();
+      const now = new Date().getTime();
+      const diff = eventTime - now;
+      if (diff <= 0) {
+        document.getElementById('countdown').innerHTML = 
+          '<div style="font-family:\'Bebas Neue\';font-size:2rem;color:#ffd700;text-shadow:1px 1px 0 #000">🎉 ВРЕМЯ ГЕРОЕВ!</div>';
+        return;
+      }
+      const days = Math.floor(diff/(1000*60*60*24));
+      const hours = Math.floor((diff%(1000*60*60*24))/(1000*60*60));
+      const minutes = Math.floor((diff%(1000*60*60))/(1000*60));
+      const seconds = Math.floor((diff%(1000*60))/1000);
+      document.getElementById('days').textContent = String(days).padStart(2,'0');
+      document.getElementById('hours').textContent = String(hours).padStart(2,'0');
+      document.getElementById('minutes').textContent = String(minutes).padStart(2,'0');
+      document.getElementById('seconds').textContent = String(seconds).padStart(2,'0');
+    }
+    setInterval(updateCountdown, 1000);
+    updateCountdown();
+
+    // 🕸️ Эффект паутины при клике
+    function createWebShootEffect() {
+      document.addEventListener('click', function(e) {
+        if (e.target.closest('a') || e.target.closest('button')) return;
+        const web = document.createElement('div');
+        web.className = 'web-shoot';
+        web.style.left = e.clientX + 'px';
+        web.style.top = e.clientY + 'px';
+        web.style.setProperty('--tx', (Math.random()-0.5)*200+'px');
+        web.style.setProperty('--ty', (Math.random()-0.5)*200+'px');
+        document.body.appendChild(web);
+        setTimeout(() => web.remove(), 1000);
+      });
+    }
+
+    function createSpiderSwing() {
+      document.querySelectorAll('.spider-emblem').forEach((el,i) => {
+        el.style.animationDelay = `${i*0.3}s`;
+      });
+    }
+
+    // ✨ Появление при скролле
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) entry.target.classList.add('visible');
+      });
+    }, { threshold: 0.15 });
+    document.querySelectorAll('.fade-in-up').forEach(el => observer.observe(el));
+
+    // 🎊 Конфетти
+    function createComicConfetti() {
+      const emojis = ['🕷️','🕸️','🦸','💥','✨','🎉','🔴','🔵'];
+      setInterval(() => {
+        if (Math.random() > 0.7) {
+          const conf = document.createElement('div');
+          conf.textContent = emojis[Math.floor(Math.random()*emojis.length)];
+          conf.style.cssText = `
+            position:fixed; left:${Math.random()*100}vw; top:-20px;
+            font-size:${15+Math.random()*20}px;
+            animation:confettiFall ${3+Math.random()*3}s linear forwards;
+            z-index:500; pointer-events:none; text-shadow:1px 1px 0 #000;
+          `;
+          document.body.appendChild(conf);
+          setTimeout(() => conf.remove(), 6000);
+        }
+      }, 800);
+    }
+    const style = document.createElement('style');
+    style.textContent = `@keyframes confettiFall{to{transform:translateY(100vh) rotate(${Math.random()*720}deg);opacity:0}}`;
+    document.head.appendChild(style);
+    setTimeout(createComicConfetti, 2000);
+
+    // 🔇 Авто-мьют при сворачивании вкладки
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden && !isMuted) {
+        audio.pause();
+      }
+	  if (!document.hidden && !isMuted) {
+        audio.play();
+      }
+    });
+  </script>
+</body>
+</html>
